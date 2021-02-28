@@ -1,11 +1,11 @@
 version: '3'
 services:
-  db:
+  rails-db:
     image: mysql:5.6
     container_name: rails-docker-db
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_DATABASE=docker
+      - MYSQL_DATABASE=rails_docker
     ports:
       - '3306:3306'
     volumes:
@@ -14,10 +14,10 @@ services:
       # - ./docker/dev.cnf:/etc/mysql/conf.d/dev.cnf:ro
     # cpu_shares: 1024
     # mem_limit: 2500M
-  web:
+  rails-web:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    image: app
+    image: rails-docker-app
     container_name: rails-docker-app
     volumes:
       - ".:/app"
@@ -25,7 +25,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      - rails-db
 volumes:
   gems:
     external: false
